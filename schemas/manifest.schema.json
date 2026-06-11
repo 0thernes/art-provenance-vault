@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://0thernes.art/schemas/apv/manifest.schema.json",
+  "title": "APV Artwork Manifest",
+  "description": "One manifest per artwork. The unit of provenance in Art Provenance Vault: identity (sha256), authorship claim, creation chain, license offer, watermark records, and chain linkage to the creator's previous manifest. Signed in canonical (sorted-key, compact) form.",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "asset",
+    "creator",
+    "creation",
+    "license",
+    "registered_at",
+    "chain"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_version": {
+      "description": "Version of this manifest contract. Bump on any breaking schema change.",
+      "const": "0.1.0"
+    },
+    "asset": {
+      "type": "object",
+      "description": "The artwork being registered, identified by its exact bytes.",
+      "required": ["sha256", "byte_size"],
+      "additionalProperties": false,
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "byte_size": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Size of the asset in bytes at registration time."
+        },
+        "filename": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Original filename. Informational only — identity is the hash."
+        },
+        "media_type": {
+          "type": "string",
+          "pattern": "^[a-z]+/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*$",
+          "description": "IANA media type, e.g. image/png.",
+          "examples": ["image/png", "image/jpeg", "video/mp4"]
+        },
+        "storage": {
+          "type": "array",
+          "description": "Where the bytes can be retrieved. Git is NOT the asset store; these are content-addressed locations the manifest points at.",
+          "items": {
+            "type": "object",
+            "required": ["scheme", "locator"],
+            "additionalProperties": false,
+            "properties": {
+              "scheme": {
+                "enum": ["local-cas", "s3", "ipfs", "https"],
+                "description": "Storage backend type."
+              },
+              "locator": {
+                "type": "string",
+                "maxLength": 2048,
+                "description": "Backend-specific locator (path, bucket key, CID, URL)."
+              }
+            }
+          }
+        }
+      }
+    },
+    "creator": {
+      "type": "object",
+      "description": "The entity claiming authorship. A claim, made non-repudiable by the signature — not adjudicated by APV.",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "Stable creator identifier (handle, DID, or URI)."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "Display name of the creator."
+        },
+        "public_key_fingerprint": {
+          "type": "string",
+          "pattern": "^(ed25519:)?[A-Fa-f0-9]{16,128}$",
+          "description": "Fingerprint of the signing key (MVP+). Binds the manifest signature to a stable creator identity."
+        },
+        "contact": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional contact URI (mailto: or https:)."
+        }
+      }
+    },
+    "creation": {
+      "type": "object",
+      "description": "How the work was made — the provenance core for AI-assisted art.",
+      "required": ["method"],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "enum": ["human", "ai_generated", "ai_assisted", "hybrid"],
+          "description": "Top-level creation classification."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the work was created (creator-asserted; ledger timestamps come from git/anchoring)."
+        },
+        "tools": {
+          "type": "array",
+          "description": "Software and models involved, in order of use.",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "maxLength": 256 },
+              "version": { "type": "string", "maxLength": 128 },
+              "model_hash": {
+                "$ref": "#/$defs/sha256",
+                "description": "Hash of model weights if known — pins the exact model."
+              }
+            }
+          }
+        },
+        "prompts": {
+          "type": "array",
+          "description": "Prompt provenance. Record cleartext OR a salted hash for trade-secret prompts (provable later, private now).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "properties": {
+              "text": { "type": "string", "maxLength": 20000 },
+              "prompt_sha256": {
+                "$ref": "#/$defs/sha256",
+                "description": "sha256(salt || prompt) when the prompt itself is withheld."
+              },
+              "negative": { "type": "boolean", "default": false },
+              "step": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Position in a multi-step generation chain."
+              }
+            }
+          }
+        },
+        "human_contribution": {
+          "type": "string",
+          "maxLength": 10000,
+          "description": "Creator's contemporaneous declaration of human authorship (selection, composition, retouching...). Legally significant; free text by design — APV records claims, it does not score them."
+        },
+        "ai_training": {
+          "enum": ["allowed", "disallowed", "conditional"],
+          "description": "Explicit permission signal for use of this work in AI training. Separate from the license string; maps to C2PA training-and-data-mining assertion."
+        }
+      }
+    },
+    "parent_works": {
+      "type": "array",
+      "description": "Works this one derives from (img2img sources, collage elements, fine-tune references). Forms the derivation DAG across manifests.",
+      "items": {
+        "type": "object",
+        "required": ["sha256", "relation"],
+        "additionalProperties": false,
+        "properties": {
+          "sha256": { "$ref": "#/$defs/sha256" },
+          "relation": {
+            "enum": ["derived_from", "composited_from", "style_reference", "trained_on", "remix_of"],
+            "description": "Nature of the derivation."
+          },
+          "manifest_sha256": {
+            "$ref": "#/$defs/sha256",
+            "description": "Hash of the parent's manifest, if the parent is APV-registered."
+          },
+          "note": { "type": "string", "maxLength": 1000 }
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "description": "The license offer attached to this work. Signed with the manifest, making the offer non-repudiable and timestamped.",
+      "required": ["spdx"],
+      "additionalProperties": false,
+      "properties": {
+        "spdx": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "description": "SPDX license expression. Custom commercial terms use LicenseRef- with the full terms document referenced below.",
+          "examples": ["CC-BY-4.0", "CC-BY-NC-SA-4.0", "LicenseRef-APV-Commercial-1.0"]
+        },
+        "terms_sha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "sha256 of the full commercial terms document when spdx uses LicenseRef-. Content-addressed like assets."
+        },
+        "terms_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Where the terms document can be retrieved."
+        },
+        "rights_statement": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Human-readable summary of what is and is not permitted."
+        }
+      }
+    },
+    "watermarks": {
+      "type": "array",
+      "description": "Record of every invisible watermark embedded in distributed copies of this work. Declarative ledger entries; embedding happens in the Layer 5 pipeline.",
+      "items": {
+        "type": "object",
+        "required": ["stage", "algorithm", "payload_sha256", "embedded_at"],
+        "additionalProperties": false,
+        "properties": {
+          "stage": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Pipeline stage: 1=metadata, 2=spatial LSB, 3=frequency DCT/DWT, 4=multivariant per-recipient."
+          },
+          "algorithm": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Algorithm identifier, e.g. 'xmp-pointer-v1', 'lsb-ecc-v1', 'dct-ss-v1', 'tardos-mv-v1'."
+          },
+          "payload_sha256": {
+            "$ref": "#/$defs/sha256",
+            "description": "Hash of the embedded payload — proves later what was embedded without revealing it here."
+          },
+          "key_id": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Identifier of the embedding key (never the key itself)."
+          },
+          "recipient_id": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Stage 4: the licensee this variant was issued to. Enables leak tracing."
+          },
+          "variant_sha256": {
+            "$ref": "#/$defs/sha256",
+            "description": "Hash of the watermarked variant file (differs from asset.sha256 by construction)."
+          },
+          "embedded_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "registered_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp the manifest was generated. Ledger ordering comes from the git chain; trusted time from anchoring (v1)."
+    },
+    "chain": {
+      "type": "object",
+      "description": "Intra-creator hash chain, independent of git, so linkage survives export out of the repository (IPFS, C2PA sidecar, court filing).",
+      "required": ["prev"],
+      "additionalProperties": false,
+      "properties": {
+        "prev": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "const": null }
+          ],
+          "description": "sha256 of this creator's previous manifest in canonical form, or null for the first work in the chain."
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "1-based position in the creator's chain."
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "description": "Detached signature over the canonical manifest with this field removed. Reserved in PoC; Ed25519 from MVP.",
+      "required": ["algorithm", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": { "enum": ["ed25519"] },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/=]{64,512}$",
+          "description": "Base64-encoded signature bytes."
+        },
+        "signed_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Lowercase hex SHA-256 digest."
+    }
+  }
+}

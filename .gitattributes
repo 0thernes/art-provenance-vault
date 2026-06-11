@@ -1,0 +1,18 @@
+* text=auto
+
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+
+# Artwork assets must never be normalized — bytes are identity
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.tif binary
+*.tiff binary
+*.psd binary
+*.mp4 binary
+*.mov binary
