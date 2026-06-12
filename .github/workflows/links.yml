@@ -1,0 +1,44 @@
+name: Link checker
+
+on:
+  pull_request:
+    paths:
+      - "**.md"
+      - "docs/**"
+  schedule:
+    # Weekly on Tuesday at 07:00 UTC — offset from CI Monday run.
+    - cron: "0 7 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: links-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links in docs and README
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Check all Markdown in repo root and docs/ directory.
+          args: >
+            --verbose
+            --no-progress
+            --exclude-mail
+            --exclude "https://example.invalid"
+            --exclude "https://0thernes.art"
+            README.md
+            CODE_OF_CONDUCT.md
+            CONTRIBUTING.md
+            SECURITY.md
+            CHANGELOG.md
+            docs/
+          fail: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

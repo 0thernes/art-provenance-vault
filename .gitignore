@@ -32,3 +32,10 @@ desktop.ini
 *.p12
 .env
 .env.*
+
+# Logs — keep the directory (.gitkeep) but not log files themselves
+logs/*.log
+logs/*.log.*
+
+# SQLite manifest index (rebuildable from the ledger; never commit)
+vault/index.db

@@ -1,0 +1,66 @@
+name: Bug report
+description: >
+  Something in the register/verify loop, manifest schema validation, or CI
+  pipeline is not behaving as documented.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before filing:** check that this is not a documented PoC limitation
+        (unsigned manifests, no watermark implementation yet, single-clone
+        tamper evidence). See SECURITY.md and ARCHITECTURE.md.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: >
+        Describe the unexpected behaviour. For trust-system bugs (wrong hash
+        accepted, verify exits 0 on a tampered file, manifest written without
+        a git commit) say so explicitly.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: >
+        Exact commands and any input files needed to reproduce. Include the
+        asset filename, `--license`, and `--method` flags used with `register`.
+      placeholder: |
+        1. printf 'test' > test.bin
+        2. python src/provenance.py register test.bin --license CC0-1.0 --method human
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What should have happened according to the docs?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version, OS, git version, and relevant output from `git log --oneline -3`.
+      placeholder: |
+        Python 3.12.3
+        Windows 11 / Ubuntu 24.04
+        git 2.45.0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: trust_model_impact
+    attributes:
+      label: Trust model impact
+      description: Does this bug affect the integrity guarantees of the ledger?
+      options:
+        - label: "Yes — this could allow manifest forgery, hash mismatch acceptance, or silent ledger corruption"
+        - label: "No — this is a UX, output formatting, or tooling issue only"

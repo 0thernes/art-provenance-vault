@@ -1,0 +1,64 @@
+name: Feature request
+description: >
+  Propose a new capability for Art Provenance Vault — a new command, schema
+  field, watermark stage, storage backend, or integration.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Scope check:** APV follows a phased roadmap (PoC → MVP → v1). The
+        PoC must stay stdlib-only. MVP adds cryptography + Pillow + NumPy.
+        If your request requires a dependency not already planned, say so.
+        Anything that touches the manifest schema contract needs a version bump
+        and migration path.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem this solves
+      description: >
+        What gap in the provenance chain, licensing workflow, watermark
+        pipeline, or developer experience does this address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: >
+        Describe the feature. If it touches the manifest schema, sketch the
+        new or changed fields. If it adds a CLI command, show the intended
+        interface.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Which roadmap phase does this fit?
+      options:
+        - "PoC (stdlib-only, must not add dependencies)"
+        - "MVP (cryptography / Pillow / NumPy / SQLite allowed)"
+        - "v1 (C2PA, hosted API, multivariant watermarks, anchoring)"
+        - "Post-v1 / research track"
+    validations:
+      required: true
+
+  - type: textarea
+    id: layer
+    attributes:
+      label: Architecture layer(s) affected
+      description: >
+        Which of the six layers does this touch? (L1 identity / L2 manifest /
+        L3 git ledger / L4 C2PA / L5 watermarking / L6 storage+anchoring)
+
+  - type: checkboxes
+    id: schema_impact
+    attributes:
+      label: Schema impact
+      options:
+        - label: "This requires a change to schemas/manifest.schema.json"
+        - label: "This is additive and backward-compatible (no version bump needed)"
+        - label: "This is a breaking schema change (manifest_version bump required)"

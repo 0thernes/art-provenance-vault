@@ -1,0 +1,70 @@
+name: Task / implementation card
+description: >
+  Track a concrete implementation task from the Kanban backlog — a card that
+  maps to a specific roadmap acceptance criterion.
+labels: ["task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for discrete, estimatable implementation tasks: adding
+        Ed25519 signing, implementing a watermark stage, wiring the SQLite
+        index, writing an ADR, etc. For bug reports use the Bug template;
+        for new ideas use the Feature Request template.
+
+  - type: input
+    id: card_id
+    attributes:
+      label: Kanban card ID
+      description: >
+        Reference the card from docs/KANBAN.md or docs/backlog/, e.g. T-003.
+      placeholder: "T-0XX"
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: What does Done look like?
+      description: >
+        Copy the Acceptance Criteria and Definition of Done from the backlog
+        card, or write them here if this is a new card.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Roadmap phase
+      options:
+        - "PoC"
+        - "MVP"
+        - "v1"
+        - "Infrastructure / tooling"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: Effort estimate
+      options:
+        - "XS — a few hours"
+        - "S — half a day"
+        - "M — 1–2 days"
+        - "L — 3–5 days"
+        - "XL — needs decomposition"
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: >
+        What must be completed before this task can start? Reference card IDs
+        or external library availability.
+
+  - type: textarea
+    id: layer
+    attributes:
+      label: Architecture layer(s) touched
+      description: L1 / L2 / L3 / L4 / L5 / L6 — helps assign reviewers.

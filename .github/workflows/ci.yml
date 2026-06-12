@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+# Least-privilege: CI only needs to read the repository.
+permissions:
+  contents: read
+
+# Cancel any in-flight run for the same branch/PR when a new commit is pushed.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint-and-validate:
     runs-on: ubuntu-latest

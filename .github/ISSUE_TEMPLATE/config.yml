@@ -1,0 +1,13 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: mailto:0_0@0thernes.art?subject=%5BAPV%20SECURITY%5D
+    about: >
+      Do NOT open a public issue for security vulnerabilities. Email
+      0_0@0thernes.art with subject [APV SECURITY]. See SECURITY.md for the
+      full disclosure policy and threat-model notes.
+  - name: Architecture discussion
+    url: https://github.com/0thernes/art-provenance-vault/discussions
+    about: >
+      Questions about the six-layer architecture, C2PA alignment, or watermark
+      design? Start a Discussion rather than an Issue.

@@ -2,6 +2,11 @@
 
 **Tamper-evident provenance, IP licensing, and watermarking for AI-assisted art — built on git as the ledger.**
 
+[![CI](https://github.com/0thernes/art-provenance-vault/actions/workflows/ci.yml/badge.svg)](https://github.com/0thernes/art-provenance-vault/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/0thernes/art-provenance-vault/actions/workflows/codeql.yml/badge.svg)](https://github.com/0thernes/art-provenance-vault/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Status: PoC](https://img.shields.io/badge/status-PoC-orange)
+
 ## Vision
 
 Every piece of AI-assisted art should carry a verifiable, portable record of who made it, how it was made, what it derives from, and under what terms it may be used. Art Provenance Vault (APV) turns that record into infrastructure: a signed manifest per artwork, chained into a git history that anyone can audit, aligned with the C2PA Content Credentials standard, and reinforced by a layered invisible-watermark pipeline for leak tracing.
@@ -81,6 +86,21 @@ schemas/         JSON Schema for the artwork manifest
 src/             PoC CLI (provenance.py)
 .github/         CI workflow (lint + schema validation)
 ```
+
+## Project Board
+
+Development is tracked in [docs/KANBAN.md](docs/KANBAN.md) with WIP-limited
+columns (Backlog / Ready / In Progress / In Review / Done). Detailed card
+files for the highest-priority MVP work live in [docs/backlog/](docs/backlog/).
+
+## Quality and Audit
+
+| Document | Purpose |
+|----------|---------|
+| [docs/AUDIT.md](docs/AUDIT.md) | Gold-standard self-audit checklist (35+ items across Correctness, Security, Provenance Integrity, Performance, Reproducibility, Tests, Docs, Licensing) |
+| [docs/TESTING.md](docs/TESTING.md) | Test strategy: pyramid, levels, coverage targets, CI gating |
+| [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md) | Structured JSON log schema, log levels, `logs/` convention, key metrics |
+| [docs/SECURITY-NOTES.md](docs/SECURITY-NOTES.md) | Defensive security posture: assets, trust boundaries, risk mitigations for manifest forgery, key compromise, ledger rewrite, and watermark removal |
 
 ## License
 

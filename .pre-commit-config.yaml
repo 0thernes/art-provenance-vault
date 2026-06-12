@@ -1,0 +1,41 @@
+repos:
+  # ── Universal file hygiene ──────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-merge-conflict
+      - id: check-yaml
+        # Exclude multi-document YAML if any arrive in future.
+        args: [--allow-multiple-documents]
+      - id: check-json
+        # Catches malformed manifests and the schema file before commit.
+        files: \.(json)$
+      - id: check-added-large-files
+        args: [--maxkb=500]
+        # Remind contributors that assets do NOT live in git.
+      - id: detect-private-key
+        # Belt-and-suspenders guard; .gitignore already excludes *.pem *.key etc.
+
+  # ── Python linting and formatting (ruff) ───────────────────────────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
+    hooks:
+      - id: ruff
+        # Match the rule set used in CI. Add --fix to auto-correct safe issues.
+        args: [--select=E,F,W,I,UP,B,SIM,S]
+        files: ^src/
+      - id: ruff-format
+        files: ^src/
+
+  # ── Markdown / YAML / JSON pretty-print (prettier) ─────────────────────────
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        types_or: [markdown, yaml]
+        # Do not reformat the manifest schema — sorted-key order is intentional.
+        exclude: ^schemas/

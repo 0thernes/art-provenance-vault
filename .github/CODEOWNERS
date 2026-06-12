@@ -1,0 +1,4 @@
+# Every file in the repository is owned by the project maintainer.
+# This file is intentionally broad during the PoC phase. Narrow ownership
+# paths will be added in MVP as module boundaries stabilise.
+* @0thernes
