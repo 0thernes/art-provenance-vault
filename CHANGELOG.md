@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-12
+
+### Added
+
+- `docs/CASE-STUDY-ARTIST-ZERO.md`: artist-zero case study mapping the
+  0thernes public provenance trail onto APV manifest fields. Documents the
+  five independently verifiable evidence layers (X handles, 0thernes.art,
+  Medium third-party attribution "Prompts by 0thernes" Oct 2025, CC-licensed
+  GitHub prompt repo `0thernes-L-L-C/Prompt-Improvisation`, PromptBase
+  commercial listing, Sora profile, OpenSea/SuperRare/objkt marketplace
+  presence) and explains why the trail satisfies the auditable
+  human-creative-control + attribution evidence standard described in
+  `docs/IP-STRATEGY.md`. Includes a fully worked APV manifest JSON example
+  (DALL-E 3 + Prompt 5 from the CC corpus) with field-by-field conformance
+  notes against `schemas/manifest.schema.json`.
+
+### Changed
+
+- `README.md`: added `docs/CASE-STUDY-ARTIST-ZERO.md` to the Quality and
+  Audit docs index.
+
 ## [0.1.1] - 2026-06-11
 
 ### Added

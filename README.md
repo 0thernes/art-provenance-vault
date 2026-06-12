@@ -124,6 +124,7 @@ files for the highest-priority MVP work live in [docs/backlog/](docs/backlog/).
 | [docs/TESTING.md](docs/TESTING.md) | Test strategy: pyramid, levels, coverage targets, CI gating |
 | [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md) | Structured JSON log schema, log levels, `logs/` convention, key metrics |
 | [docs/SECURITY-NOTES.md](docs/SECURITY-NOTES.md) | Defensive security posture: assets, trust boundaries, risk mitigations for manifest forgery, key compromise, ledger rewrite, and watermark removal |
+| [docs/CASE-STUDY-ARTIST-ZERO.md](docs/CASE-STUDY-ARTIST-ZERO.md) | Artist Zero case study: mapping the 0thernes public provenance trail (Medium third-party attribution, CC GitHub repo, PromptBase listing, NFT markets) onto APV manifest fields with a worked example manifest |
 
 ## License
 
