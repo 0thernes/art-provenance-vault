@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `docs/AUTHORSHIP-TIERS.md` — authorship disclosure tiers (A solo-human authorship for prompts and
+  writing; B hybrid/AI-assisted co-creation for films and accuracy-critical work; C reference only)
+  and how each maps onto `human_attestations[]`, `ai_generation`, and a recommended `authorship_tier`
+  field. Frames honest disclosure (not percentage claims) as the defensible standard, consistent with
+  IP-STRATEGY.md's legal reality check.
+
+### Changed
+
+- `README.md` — added `docs/AUTHORSHIP-TIERS.md` to the Quality and Audit docs index.
+
 ## [0.1.2] - 2026-06-12
 
 ### Added
