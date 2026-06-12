@@ -5,6 +5,11 @@
 > guide product design. Nothing here has been reviewed by counsel. Before any
 > commercial launch, these notes must be replaced by an actual legal opinion
 > in each target jurisdiction.
+>
+> For the project's full IP-protection thesis — including the five-pillar
+> strategy, the 2-of-3 human-authorship design, and an honest legal reality
+> check on current US Copyright Office guidance and the *Thaler v. Perlmutter*
+> case — see [IP-STRATEGY.md](IP-STRATEGY.md).
 
 ## 1. Why licensing is a first-class manifest field
 
@@ -62,17 +67,27 @@ The hard, unresolved questions APV must remain agnostic about:
   and the *Thaler* line of cases) is that purely machine-generated output is
   not copyrightable; works with sufficient human authorship are, with the
   AI-generated portions potentially excluded. Registration practice asks
-  applicants to disclose AI use.
+  applicants to disclose AI use. In *Thaler v. Perlmutter* (D.D.C. Aug. 2023,
+  affirmed D.C. Cir. March 2025), the court held that works authored entirely
+  by an AI system with no human author cannot be registered: the Copyright Act
+  requires a human author. Copyright *can* protect the human-authored
+  elements — creative selection, arrangement, and modification — but
+  eligibility turns on qualitative sufficient human creative control, judged
+  case-by-case, not on a numeric percentage or stage count.
 - **EU/UK:** EU law requires the author's "own intellectual creation"; the
   UK's s.9(3) CDPA computer-generated-works provision points the other way
   but its scope is debated.
 - **Practical consequence for APV:** we cannot and do not certify that a
   registered work *is* copyrighted. What we can do — and what the design
   leans into — is create **contemporaneous, signed, tamper-evident evidence
-  of the human contribution** (`creation.human_contribution`, prompt
-  records, parent-work chains, editing actions). Whatever line each
+  of the human contribution** (`creation.human_contribution`, `human_attestations[]`,
+  prompt records, parent-work chains, editing actions). Whatever line each
   jurisdiction ultimately draws, the creator who can *prove* their process
   is in a categorically better position than one who cannot.
+
+Full analysis of the human-authorship strategy, including the 2-of-3 design
+heuristic and its legal limits, is in [IP-STRATEGY.md](IP-STRATEGY.md)
+Pillar 4.
 
 ## 6. Adjacent regimes to track
 

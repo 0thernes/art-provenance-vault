@@ -209,6 +209,90 @@
         }
       }
     },
+    "human_attestations": {
+      "type": "array",
+      "description": "Structured records of each human approval layer in the 2-of-3 human-majority production workflow. Layer 1 = pre-generation human direction; layer 2 = post-generation human editing and approval. Provides auditable, timestamped, signed evidence of genuine human creative control for copyright purposes. See docs/IP-STRATEGY.md Pillar 4.",
+      "items": {
+        "type": "object",
+        "required": ["layer", "actor", "action", "timestamp"],
+        "additionalProperties": false,
+        "properties": {
+          "layer": {
+            "type": "integer",
+            "enum": [1, 2],
+            "description": "1 = pre-generation human direction (concept, framing, parameter selection); 2 = post-generation human editing and approval (curation, retouching, final selection)."
+          },
+          "actor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "description": "Identifier of the human actor performing this layer (creator id, collaborator id, or other stable reference)."
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "Contemporaneous description of the human act: what the actor chose, changed, approved, or rejected. Should be specific — 'adjusted composition, desaturated background, approved final crop' is stronger evidence than 'reviewed'."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp of this human action. Used to establish that human involvement predated any dispute."
+          },
+          "signature": {
+            "type": "string",
+            "description": "Placeholder for a detached actor signature over this attestation record (Ed25519 from MVP). Leave null in PoC.",
+            "maxLength": 512
+          }
+        }
+      }
+    },
+    "ai_generation": {
+      "type": "object",
+      "description": "Structured record of the AI generation event at stage B of the 2-of-3 human-majority workflow. Complements creation.tools and creation.prompts with the specific parameters used during generation. Provides a reproducible, attributable record of the machine's role. See docs/IP-STRATEGY.md Pillar 3.",
+      "required": ["model"],
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "Model name and version, e.g. 'stable-diffusion-xl-base-1.0' or 'midjourney-v6'. This is the machine component; the manifest records it so the human contribution can be assessed relative to the full process."
+        },
+        "prompt_ref": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Reference to the prompt record: either the index into creation.prompts or a sha256 of the prompt text. Cross-links the generation record to the creator's full prompt provenance."
+        },
+        "params": {
+          "type": "object",
+          "description": "Generation parameters (seed, sampler, steps, cfg_scale, dimensions, etc.). Schema is open to accommodate different model families.",
+          "additionalProperties": true,
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "description": "Random seed. Records the specific generation instance."
+            },
+            "steps": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Diffusion or sampling steps."
+            },
+            "cfg_scale": {
+              "type": "number",
+              "description": "Classifier-free guidance scale (prompt adherence weight)."
+            },
+            "sampler": {
+              "type": "string",
+              "maxLength": 128,
+              "description": "Sampler algorithm, e.g. 'DPM++ 2M Karras'."
+            },
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
     "watermarks": {
       "type": "array",
       "description": "Record of every invisible watermark embedded in distributed copies of this work. Declarative ledger entries; embedding happens in the Layer 5 pipeline.",
@@ -250,6 +334,35 @@
             "type": "string",
             "format": "date-time"
           }
+        }
+      }
+    },
+    "ledger_anchor": {
+      "type": "object",
+      "description": "Record of the public-chain or transparency-log anchor for this manifest's Merkle root. Provides third-party-verifiable timestamping independent of any single hosting platform. See docs/IP-STRATEGY.md Pillar 2 and docs/ARCHITECTURE.md Layer 6.",
+      "required": ["chain", "anchored_at"],
+      "additionalProperties": false,
+      "properties": {
+        "chain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "Identifier of the chain or transparency log used, e.g. 'ethereum-mainnet', 'polygon-pos', 'bitcoin-opentimestamps', 'apv-chain-v1'. Chain-agnostic by design.",
+          "examples": ["ethereum-mainnet", "polygon-pos", "bitcoin-opentimestamps", "apv-chain-v1"]
+        },
+        "tx_or_merkle_ref": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Transaction hash, OpenTimestamps proof reference, or Merkle-root publication identifier that locates the anchor on the specified chain. Used to independently verify the timestamp."
+        },
+        "merkle_root": {
+          "$ref": "#/$defs/sha256",
+          "description": "SHA-256 Merkle root of the batch of manifest hashes published in this anchor. Allows verifying that this specific manifest was included in the anchored set."
+        },
+        "anchored_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the anchor was published. For blockchain anchors this is block-time; for OTS it is the attestation timestamp."
         }
       }
     },

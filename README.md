@@ -32,6 +32,28 @@ APV combines four well-understood primitives into one coherent system:
 
 Git stores the **manifests**, not the artworks. Bulk assets live in content-addressed storage that the manifest points to by hash. Optional periodic anchoring of a Merkle root into a public blockchain adds third-party timestamping without making the system depend on a chain.
 
+## IP-Protection Strategy (Five Pillars)
+
+APV implements a five-pillar protection stack designed so that stripping any
+one layer of protection does not eliminate the authorship claim:
+
+| Pillar | Mechanism | Purpose |
+|--------|-----------|---------|
+| **1 — Invisible watermark** | 4-stage pipeline embedded in signal | Fallback when visible mark is stripped |
+| **2 — Blockchain ledger** | Merkle root anchored to public chain or OTS | Permanent, third-party timestamp; survives platform loss |
+| **3 — Per-file metadata** | Signed manifest with full creation chain | Extensive context to prove authorship in a legal contest |
+| **4 — Human-authorship layering** | 2-of-3 human stages wrapping AI generation | Auditable evidence of genuine human creative control |
+| **5 — Public repo storage** | Git vault cloneable by anyone | Distributed, decentralized ledger; no single authority |
+
+The full thesis — including an honest legal reality check on the 2-of-3
+human-majority heuristic versus current US Copyright Office guidance and the
+*Thaler v. Perlmutter* line of cases — is in
+[docs/IP-STRATEGY.md](docs/IP-STRATEGY.md).
+
+> **Design strategy, not legal advice.** This system produces tamper-evident
+> provenance records and auditable human-authorship evidence. It does not
+> certify that any work is copyrighted and does not constitute legal counsel.
+
 ## Architecture Overview
 
 ```
@@ -97,6 +119,7 @@ files for the highest-priority MVP work live in [docs/backlog/](docs/backlog/).
 
 | Document | Purpose |
 |----------|---------|
+| [docs/IP-STRATEGY.md](docs/IP-STRATEGY.md) | Five-pillar IP-protection strategy: invisible watermark, blockchain ledger, per-file metadata, human-authorship layering (2-of-3 design + legal reality check), public-repo storage |
 | [docs/AUDIT.md](docs/AUDIT.md) | Gold-standard self-audit checklist (35+ items across Correctness, Security, Provenance Integrity, Performance, Reproducibility, Tests, Docs, Licensing) |
 | [docs/TESTING.md](docs/TESTING.md) | Test strategy: pyramid, levels, coverage targets, CI gating |
 | [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md) | Structured JSON log schema, log levels, `logs/` convention, key metrics |

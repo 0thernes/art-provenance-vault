@@ -6,6 +6,13 @@ overall trust guarantee is the composition of those narrow claims — not a
 single monolithic promise. This document describes each layer, what it
 guarantees, and — just as important — what it does **not**.
 
+> **IP-protection strategy.** The five-pillar protection stack — invisible
+> watermark fallback, blockchain ledger, extensive per-file metadata, human-
+> authorship layering (2-of-3 human majority), and public-repo durable storage
+> — is the conceptual foundation this architecture implements. The full thesis,
+> with the legal reality check and design disclaimers, lives in
+> [IP-STRATEGY.md](IP-STRATEGY.md). Read it alongside this document.
+
 ```
 Layer 6  Anchoring (optional)     Merkle root of manifests → public chain
 Layer 5  Watermarking             4-stage embed pipeline, per-recipient variants
@@ -51,9 +58,12 @@ manifest is the unit of provenance. Core fields:
 | `asset.sha256` | Layer 1 identity of the artwork bytes |
 | `creator` | Human/entity claiming authorship (id, name, public key fingerprint) |
 | `creation` | How it was made: tool/model, model version, prompt record, human contribution statement |
+| `human_attestations[]` | Signed, timestamped records of each human approval layer (pre- and post-generation) — the evidentiary core of the human-authorship strategy. See [IP-STRATEGY.md](IP-STRATEGY.md) Pillar 4. |
+| `ai_generation` | Structured record of the AI generation event: model, prompt reference, generation params (seed, sampler, steps). Complements `creation.tools` with the specific machine-stage parameters. |
 | `parent_works[]` | Hashes of works this one derives from → a derivation DAG across manifests |
 | `license` | SPDX expression plus optional commercial terms reference |
 | `watermarks[]` | Records of every watermark embedded in distributed copies (Layer 5) |
+| `ledger_anchor` | Chain identifier, tx/Merkle reference, and anchor timestamp for the Pillar-2 public ledger entry. See [IP-STRATEGY.md](IP-STRATEGY.md) Pillar 2. |
 | `chain.prev` | sha256 of the previous manifest by this creator → an intra-creator chain *inside* the data, independent of git |
 | `signature` | Detached signature over the canonicalized manifest (reserved in PoC, Ed25519 in MVP) |
 
@@ -74,9 +84,16 @@ Design decisions worth defending:
 - **Human contribution is a stated claim, not an inferred score.** The
   `creation.human_contribution` field is a free-text declaration. APV
   records claims and makes them non-repudiable; it does not adjudicate them.
-  This matters legally (see `LEGAL-NOTES.md`) — copyright offices care about
-  human authorship, and a contemporaneous signed declaration is far stronger
-  evidence than a retroactive one.
+  This matters legally (see [LEGAL-NOTES.md](LEGAL-NOTES.md)) — copyright
+  offices care about human authorship, and a contemporaneous signed declaration
+  is far stronger evidence than a retroactive one.
+- **Human attestations add structure to that claim.** `human_attestations[]`
+  breaks the creation process into two explicit human stages — pre-generation
+  direction (layer 1) and post-generation editing and approval (layer 2) —
+  each with a timestamped, signed record. This 2-of-3 human-majority design
+  ensures human creative control is documented at both ends of the AI
+  generation event. The legal implications are analyzed in
+  [IP-STRATEGY.md](IP-STRATEGY.md) Pillar 4.
 
 ## Layer 3 — Git as the Tamper-Evidence Ledger
 

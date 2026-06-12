@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-11
+
+### Added
+
+- `docs/IP-STRATEGY.md`: five-pillar IP-protection strategy — invisible/robust
+  watermark fallback, blockchain public ledger anchoring, extensive per-file
+  metadata, human-authorship layering (2-of-3 human-majority design), and
+  public-repo durable storage. Includes a "Legal reality check" section
+  accurately summarizing *Thaler v. Perlmutter* (D.D.C. 2023, affirmed D.C.
+  Cir. March 2025) and current US Copyright Office human-authorship guidance,
+  with an explicit not-legal-advice disclaimer.
+
+### Changed
+
+- `schemas/manifest.schema.json`: added `human_attestations[]` array (layer,
+  actor, action, timestamp, signature placeholder), `ai_generation` object
+  (model, prompt-ref, params), and `ledger_anchor` object (chain,
+  tx_or_merkle_ref, merkle_root, anchored_at). Schema remains valid JSON
+  Schema 2020-12; `watermarks[]` array preserved unchanged.
+- `docs/ARCHITECTURE.md`: added IP-STRATEGY.md cross-reference header, updated
+  Layer 2 manifest field table to include the three new objects, and expanded
+  the human-contribution design note to describe the 2-of-3 attestation model.
+- `README.md`: added Five-Pillar IP-Protection Strategy section with table and
+  cross-link to IP-STRATEGY.md; added IP-STRATEGY.md to Quality & Audit docs
+  index.
+- `docs/LEGAL-NOTES.md`: added IP-STRATEGY.md cross-reference to disclaimer
+  block and section 5; expanded section 5 with the *Thaler* case summary and
+  link to IP-STRATEGY.md Pillar 4.
+
 ## [0.1.0] - 2026-06-11
 
 ### Added
