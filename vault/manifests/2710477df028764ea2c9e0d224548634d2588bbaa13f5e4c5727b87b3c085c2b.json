@@ -1,0 +1,24 @@
+{
+  "asset": {
+    "byte_size": 18,
+    "filename": "sample.bin",
+    "media_type": "application/octet-stream",
+    "sha256": "2710477df028764ea2c9e0d224548634d2588bbaa13f5e4c5727b87b3c085c2b"
+  },
+  "chain": {
+    "prev": null,
+    "sequence": 1
+  },
+  "creation": {
+    "method": "human"
+  },
+  "creator": {
+    "id": "ci@example.invalid",
+    "name": "ci"
+  },
+  "license": {
+    "spdx": "CC0-1.0"
+  },
+  "manifest_version": "0.1.0",
+  "registered_at": "2026-06-13T06:08:44+00:00"
+}
