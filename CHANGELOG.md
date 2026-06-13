@@ -19,6 +19,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `README.md` — added `docs/AUTHORSHIP-TIERS.md` to the Quality and Audit docs index.
 
+## [0.1.3] - 2026-06-12
+
+### Added
+
+- `src/merkle.py` — stdlib-only (hashlib) Merkle tree implementation: `build_merkle_root`,
+  `merkle_proof`, `verify_proof`. Domain-separated leaf vs. node hashing (0x00/0x01 prefixes,
+  RFC 6962 style) prevents second-preimage attacks. Odd-level duplicate-last convention.
+  Provides O(log n) inclusion proofs for `ledger_anchor.merkle_root`, replacing O(n) chain
+  walk for inclusion queries. **Backlog: Merkle/anchor — DONE (PoC).**
+- `src/provenance.py` — two new CLI subcommands:
+  - `anchor [manifest-dir]` — computes the SHA-256 Merkle root over all manifests in
+    canonical form (sorted by filename), prints the root and per-leaf hashes. Realizes
+    `ledger_anchor.merkle_root`; root can be published to a transparency log or public chain.
+  - `verify-chain [manifest-dir]` — walks `chain.prev` across all manifests per creator,
+    recomputes each manifest's canonical hash, validates each link's prev linkage, and on
+    tamper reports **which specific manifest broke** (tamper localization), not just that
+    the chain is invalid. Also validates filename-vs-`asset.sha256` consistency.
+- `tests/conftest.py` — shared pytest fixture: `tmp_vault` (git-init'd temp directory with
+  `vault/manifests/` and a configured user identity).
+- `tests/test_merkle.py` — 21 tests: `build_merkle_root` round-trip, determinism, and
+  tamper sensitivity; `merkle_proof` + `verify_proof` inclusion proofs across 1/2/3/4/7-leaf
+  trees, all indices; tampered leaf fails; wrong root fails; sibling swap fails; direction
+  flip fails; invalid direction raises; proof path length matches ceil(log2(n)).
+- `tests/test_provenance.py` — 23 tests: register→verify happy path; tampered file returns
+  non-zero; double-register is idempotent; unregistered file returns non-zero; chain sequence
+  increments and `chain.prev` is correct; `anchor` prints root and handles empty dir;
+  `verify-chain` validates single/three-link/two-creator chains; tamper localization —
+  middle manifest mutated in-place is identified by filename in stderr; genesis manifest
+  tamper detected; wrong `prev` pointer reported.
+- `.github/workflows/ci.yml` — extended the existing Python job with:
+  - `anchor` + `verify-chain` smoke steps (run after existing register/verify smoke).
+  - `pytest tests/ -q` step (installs pytest, runs all 44 tests).
+
+### Status of deferred features (for backlog tracking)
+
+- **C2PA export/import** — still deferred to v1. No schema changes required.
+- **Ed25519 signing** — still documented-future-feature (PoC); `signature` field reserved in
+  schema. Stdlib-only discipline maintained: no crypto deps added.
+- **Blockchain anchor publication** — `anchor` command computes and prints the Merkle root;
+  actual on-chain submission (OpenTimestamps / EVM tx) remains a v1 task.
+
 ## [0.1.2] - 2026-06-12
 
 ### Added
