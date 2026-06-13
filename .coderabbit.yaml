@@ -1,0 +1,7 @@
+# CodeRabbit disabled — solo dev; no automated PR-review comments or emails.
+reviews:
+  auto_review:
+    enabled: false
+  review_status: false
+chat:
+  auto_reply: false
