@@ -39,3 +39,6 @@ logs/*.log.*
 
 # SQLite manifest index (rebuildable from the ledger; never commit)
 vault/index.db
+
+# register/verify smoke-test artifact (CI + local)
+sample.bin
